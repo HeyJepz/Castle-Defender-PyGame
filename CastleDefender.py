@@ -77,6 +77,7 @@ enemy_animations = []
 enemy_types = ['knight', 'goblin', 'purple_goblin', 'red_goblin']
 enemy_health = [75, 100, 125, 150]
 
+#enemy animation
 animation_types = ['walk', 'attack', 'death']
 for enemy in enemy_types:
     #load animations
@@ -139,9 +140,8 @@ class Castle():
         self.rect.y = y
     
     def shoot(self):
+        # position of turret 
         pos = pygame.mouse.get_pos() 
-        # position of turret
-        # pygame.draw.line(screen, WHITE, (self.rect.midleft[0], self.rect.midleft[1]), (pos))
         x_dist = pos[0] - self.rect.midleft[0]
         y_dist = -(pos[1] - self.rect.midleft[1])
         self.angle = math.degrees(math.atan2(y_dist, x_dist))
@@ -166,13 +166,14 @@ class Castle():
                  
         screen.blit(self.image, (self.rect.x, self.rect.y))             
     
+    # repair button
     def repair(self):
         if self.money >= 1000 and self.health < self.max_health:
             self.health += 500
             self.money -= 1000
             if self.health > self.max_health:
                 self.health = self.max_health
-    
+    # armour button
     def armour(self):
         if self.money >= 500:
             self.max_health += 250
@@ -202,6 +203,7 @@ class Tower(pygame.sprite.Sprite):
     def update(self, enemy_group):
         self.target_acquired = False
 
+        # target an enemy
         for e in enemy_group:
             if e.alive:
                 target_x, target_y = e.rect.midleft
@@ -209,7 +211,6 @@ class Tower(pygame.sprite.Sprite):
                 break
             
         if self.target_acquired:
-            #pygame.draw.line(screen, WHITE, (self.rect.midleft[0], self.rect.midleft[1], (target_x, target_y)))
             x_dist = target_x - self.rect.midleft[0]
             y_dist = -(target_y - self.rect.midleft[1])
             self.angle = math.degrees(math.atan2(y_dist, x_dist))
@@ -332,7 +333,7 @@ while run:
                 tower_group.add(tower)
                 castle.money -= 5000
         
-        # create enemies
+        # create enemies based on difficulty
         if level_difficulty < target_difficulty:
             if pygame.time.get_ticks() - last_enemy > ENEMY_TIMER:
                 
@@ -370,7 +371,7 @@ while run:
                 with open('score.txt', 'w') as file:
                     file.write(str(high_score))
             
-            # reset level
+            # reset level 
             if pygame.time.get_ticks() - level_reset_time > 1500: # 1.5s
                 next_level = False
                 level += 1
